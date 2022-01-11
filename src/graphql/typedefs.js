@@ -2,45 +2,40 @@ import { gql } from "apollo-server-express";
 
 // TODO: change all to accept null values
 const typedefs = gql`
-  scalar Date
+	scalar SafeInt
+	scalar JSON
 
-  enum CatalystType {
-    LEGAL
-    RUMOR
-    FINANCIAL
-    ANNOUNCEMENT
-    REGULATORY
-  }
+	type News {
+		datetime: SafeInt
+		headline: String
+		tickers: [String]
+		sourceURL: String
+		summary: String
+	}
 
-  type Delta {
-    ticker: String!
-    change: Float!
-  }
+	type Company {
+		name: String
+		ticker: String
+		logo: String
+		description: String
+		price: Float
+		dailyDelta: Float
+		revenue: [SafeInt]
+		netIncome: SafeInt
+		grossProfit: SafeInt
+		operatingIncome: SafeInt
+		peRatio: Float
+	}
 
-  type Catalyst {
-    timestamp: Date!
-    type: CatalystType!
-    title: String!
-    deltas: [Delta!]!
-  }
+	type Query {
+		searchTickers(query: String): [JSON]
 
-  type Company {
-    name: String!
-    ticker: String!
-    description: String
-    price: Float!
-    change: Float!
-    catalysts: [Catalyst]
-  }
+		company(ticker: String): Company
 
-  type Query {
-    # Queries on Companies
-    company(ticker: String): Company
+		news(ticker: String, from: String, to: String): [News]
 
-    # Queries on Catalysts
-    catalyst(id: ID): Catalyst
-    catalysts(ticker: String): [Catalyst]
-  }
+		historicalPrices(ticker: String, range: String): [Float]
+	}
 `;
 
 export default typedefs;
