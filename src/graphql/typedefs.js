@@ -27,6 +27,10 @@ const typedefs = gql`
 		peRatio: Float
 	}
 
+	type User {
+		user_id: String
+	}
+
 	type Query {
 		searchTickers(query: String): [JSON]
 
