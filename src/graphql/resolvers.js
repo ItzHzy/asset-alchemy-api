@@ -5,6 +5,7 @@ const resolvers = {
 		searchCompanies: async (parent, { query }, { dataSources, token }) => {
 			const tickers = await dataSources.IEXCloudAPI.getTickers(query);
 
+			console.log("staging");
 			const data = tickers.filter(function (ticker) {
 				return !ticker.includes("-") && !ticker.match(".*\\d.*");
 			});
