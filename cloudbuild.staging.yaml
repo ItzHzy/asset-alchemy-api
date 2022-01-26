@@ -30,5 +30,5 @@ images:
   - "gcr.io/$PROJECT_ID/asset-alchemy-api:$COMMIT_SHA"
 availableSecrets:
   secretManager:
-    - versionName: projects/$PROJECT_ID/secrets/IEX_API_KEY_PROD/versions/latest
+    - versionName: projects/738458318950/secrets/IEX_API_KEY_PROD/versions/latest
       env: "IEX_API_KEY"
