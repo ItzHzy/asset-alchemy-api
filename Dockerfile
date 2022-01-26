@@ -12,8 +12,7 @@ ENV IEX_API_KEY _IEX_API_KEY
 ENV USER_COLLECTION _USER_COLLECTION
 
 WORKDIR /app
-COPY package*.json ./
-RUN npm install --production
 COPY . .
+RUN npm install --production
 EXPOSE 8080
 CMD node ./src/index.js
