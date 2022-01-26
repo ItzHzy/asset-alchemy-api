@@ -10,7 +10,7 @@ steps:
       - "--build-arg"
       - "AUTH0_API_IDENTIFIER=https://api.assetalchemy.io"
       - "--build-arg"
-      - "IEX_API_KEY=$IEX_API_KEY"
+      - "IEX_API_KEY=$$IEX_API_KEY"
       - "--build-arg"
       - "USER_COLLECTION=users-staging"
       - "."
