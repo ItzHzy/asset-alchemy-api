@@ -16,6 +16,7 @@ ENV USER_COLLECTION $USER_COLLECTION
 WORKDIR /app
 COPY ./package*.json /app/
 COPY ./ /app/
+RUN ls -al
 RUN npm install --production
 EXPOSE 8080
 ENTRYPOINT [ "node", "./src/index.js" ] 
