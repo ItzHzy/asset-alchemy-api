@@ -6,13 +6,13 @@ steps:
       - "-t"
       - "gcr.io/$PROJECT_ID/asset-alchemy-api:$COMMIT_SHA"
       - "--build-arg"
-      - "_AUTH0_DOMAIN=asset-alchemy-staging.us.auth0.com"
+      - "AUTH0_DOMAIN=asset-alchemy-staging.us.auth0.com"
       - "--build-arg"
-      - "_AUTH0_API_IDENTIFIER=https://api.assetalchemy.io"
+      - "AUTH0_API_IDENTIFIER=https://api.assetalchemy.io"
       - "--build-arg"
-      - "_IEX_API_KEY=$$IEX_API_KEY"
+      - "IEX_API_KEY=$$IEX_API_KEY"
       - "--build-arg"
-      - "_USER_COLLECTION=users-staging"
+      - "USER_COLLECTION=users-staging"
       - "."
     secretEnv: ["IEX_API_KEY"]
   # Push the container image to Container Registry
