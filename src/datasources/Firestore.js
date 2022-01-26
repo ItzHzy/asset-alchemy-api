@@ -6,10 +6,11 @@ dotenv.config();
 
 const firestore = new Firestore({
 	projectId: process.env.PROJECT_ID,
-	keyFilename: process.env.GOOGLE_APPLICATION_CREDENTIALS,
 });
 
-export const usersCollection = firestore.collection("users");
+export const usersCollection = firestore.collection(
+	process.env.USER_COLLECTION
+);
 
 export class UserDataSource extends FirestoreDataSource {
 	async findUserById(userId) {

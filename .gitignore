@@ -1,7 +1,5 @@
+node_modules
 .env
 .DS_STORE
-notes.txt
-datasets
 key.json
-node_modules
 .vscode
