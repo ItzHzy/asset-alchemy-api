@@ -1,13 +1,16 @@
 steps:
   # Build the container image
   - name: "gcr.io/cloud-builders/docker"
+    entrypoint: "bash"
     args:
+      - "-c"
+      - "docker"
       - "build"
       - "-t"
       - "gcr.io/$PROJECT_ID/asset-alchemy-api:$COMMIT_SHA"
       - "--build-arg=AUTH0_DOMAIN=asset-alchemy-staging.us.auth0.com"
       - "--build-arg=AUTH0_API_IDENTIFIER=https://api.assetalchemy.io"
-      - "--build-arg=IEX_API_KEY=$_IEX_API_KEY"
+      - "--build-arg=IEX_API_KEY=$$IEX_API_KEY"
       - "--build-arg=USER_COLLECTION=users-staging"
       - "."
     secretEnv: ["IEX_API_KEY"]
