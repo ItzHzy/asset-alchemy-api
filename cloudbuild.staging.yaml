@@ -28,7 +28,7 @@ steps:
       - "--image"
       - "gcr.io/$PROJECT_ID/asset-alchemy-api:$COMMIT_SHA"
       - "--region"
-      - "nam5"
+      - "us-central1"
 images:
   - "gcr.io/$PROJECT_ID/asset-alchemy-api:$COMMIT_SHA"
 availableSecrets:
