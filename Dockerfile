@@ -18,4 +18,4 @@ COPY ./package*.json /app/
 COPY ./ /app/
 RUN npm install --production
 EXPOSE 8080
-CMD node ./src/index.js 
+ENTRYPOINT [ "node", "./src/index.js" ] 
