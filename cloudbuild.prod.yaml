@@ -2,19 +2,13 @@ steps:
   # Build the container image
   - name: "gcr.io/cloud-builders/docker"
     args:
-     - "build",
-     - "-t",
-     - "gcr.io/$PROJECT_ID/asset-alchemy-api:$COMMIT_SHA",
-     - "--build-arg"
-     - "_AUTH0_DOMAIN=asset-alchemy-prod.us.auth0.com"
-     - "--build-arg"
-     - "_AUTH0_API_IDENTIFIER=https://api.assetalchemy.io"
-     - "--build-arg"
-     - "_IEX_API_KEY=$$IEX_API_KEY"
-     - "--build-arg"
-     - "_USER_COLLECTION=users-prod"
-     - "."
-    secretEnv: ["IEX_API_KEY"]
+      - "build"
+      - "-t"
+      - "gcr.io/$PROJECT_ID/asset-alchemy-api:$COMMIT_SHA"
+      - "--build-arg=AUTH0_DOMAIN=asset-alchemy-prod.us.auth0.com"
+      - "--build-arg=AUTH0_API_IDENTIFIER=https://api.assetalchemy.io"
+      - "--build-arg=USER_COLLECTION=users-prod"
+      - "."
   # Push the container image to Container Registry
   - name: "gcr.io/cloud-builders/docker"
     args: ["push", "gcr.io/$PROJECT_ID/asset-alchemy-api:$COMMIT_SHA"]
@@ -28,10 +22,7 @@ steps:
       - "--image"
       - "gcr.io/$PROJECT_ID/asset-alchemy-api:$COMMIT_SHA"
       - "--region"
-      - "nam5"
+      - "us-central1"
+      - "--allow-unauthenticated"
 images:
   - "gcr.io/$PROJECT_ID/asset-alchemy-api:$COMMIT_SHA"
-availableSecrets:
-  secretManager:
-  - versionName: projects/asset-alchemy/secrets/IEX_API_KEY_PROD/versions/latest
-    env: 'IEX_API_KEY'

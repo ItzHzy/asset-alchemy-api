@@ -11,11 +11,6 @@ import isTokenValid from "./helpers/validate.js";
 dotenv.config();
 //TODO: replace .env with secrets managers and google creds
 
-console.log(process.env.IEX_API_KEY);
-console.log(process.env.AUTH0_DOMAIN);
-console.log(process.env.AUTH0_API_IDENTIFIER);
-console.log(process.env.USER_COLLECTION);
-
 const schema = makeExecutableSchema({
 	typeDefs,
 	resolvers,
