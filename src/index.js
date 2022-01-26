@@ -3,8 +3,8 @@ import { makeExecutableSchema } from "@graphql-tools/schema";
 import { ApolloError, ApolloServer, AuthenticationError } from "apollo-server";
 import resolvers from "./graphql/resolvers.js";
 import typeDefs from "./graphql/typedefs.js";
-import IEXCloudAPI from "./datasources/IEX.js.js";
-import ClearbitAPI from "./datasources/Clearbit.js.js";
+import IEXCloudAPI from "./datasources/IEX.js";
+import ClearbitAPI from "./datasources/Clearbit.js";
 import { UserDataSource, usersCollection } from "./datasources/Firestore.js";
 import isTokenValid from "./helpers/validate.js";
 
