@@ -19,4 +19,4 @@ COPY ./ /app/
 RUN ls -alR
 RUN npm install --production
 EXPOSE 8080
-ENTRYPOINT [ "node", "./src/index.js" ] 
+ENTRYPOINT ["IEX_API_KEY=${IEX_API_KEY}", "node", "./src/index.js" ] 
