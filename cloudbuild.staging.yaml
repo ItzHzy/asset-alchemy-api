@@ -9,7 +9,6 @@ steps:
       - "--build-arg=AUTH0_API_IDENTIFIER=https://api.assetalchemy.io
       - "--build-arg=USER_COLLECTION=users-staging"
       - "."
-    secretEnv: ["IEX_API_KEY"]
   # Push the container image to Container Registry
   - name: "gcr.io/cloud-builders/docker"
     args: ["push", "gcr.io/$PROJECT_ID/asset-alchemy-api:$COMMIT_SHA"]
