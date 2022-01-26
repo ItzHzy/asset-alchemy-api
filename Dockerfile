@@ -11,8 +11,9 @@ ENV AUTH0_API_IDENTIFIER=_AUTH0_API_IDENTIFIER
 ENV IEX_API_KEY=_IEX_API_KEY
 ENV USER_COLLECTION=_USER_COLLECTION
 
-COPY package*.json ./
-RUN npm i
-COPY . ./
+WORKDIR /app
+COPY package.json /app
+RUN npm install
+COPY . /app
 EXPOSE 8080
 CMD [ "node", "./src/index.js" ]
