@@ -17,7 +17,7 @@ export default class IEXCloudAPI extends RESTDataSource {
 			cacheOptions: { ttl: 60 },
 		});
 
-		return data.map((result) => result.symbol);
+		return data.length >= 0: data.map((result) => result.symbol) : [];
 	}
 
 	async getName(ticker) {
@@ -141,6 +141,7 @@ export default class IEXCloudAPI extends RESTDataSource {
 	}
 
 	async getNews(tickers) {
+		try {
 		const data = await this.get(`/stock/market/batch`, {
 			symbols: tickers.toString(),
 			types: "news",
@@ -155,6 +156,10 @@ export default class IEXCloudAPI extends RESTDataSource {
 		}
 
 		return arr;
+		} 
+		catch {
+			return []
+		}
 	}
 
 	async getHistoricalPrices(ticker, range, interval) {

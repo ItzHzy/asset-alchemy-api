@@ -19,34 +19,34 @@ export class UserDataSource extends FirestoreDataSource {
 
 	async getFollowing(userId) {
 		const data = await this.findOneById(userId);
-		return data.following;
+		return data ? data.following : [];
 	}
 
 	async isFollowing(userId, ticker) {
 		const data = await this.findOneById(userId, {
 			ttl: 0,
 		});
-		return data.following.includes(ticker);
+		return data ? data.following.includes(ticker) : [];
 	}
 
 	async getPlanType(userId) {
 		const data = await this.findOneById(userId);
-		return data.planType;
+		return data ? data.planType : "Not a user";
 	}
 
 	async getSettings(userId) {
 		const data = await this.findOneById(userId);
-		return data.settings;
+		return data ? data.settings : "Not a user";
 	}
 
 	async getTags(userId) {
 		const data = await this.findOneById(userId);
-		return data.tags;
+		return data ? data.tags : "Not a user";
 	}
 
 	async hasTag(userId, tag) {
 		const data = await this.findOneById(userId);
-		return data.tags.includes(tag);
+		return data ? data.tags.includes(tag) : false;
 	}
 
 	async addTag(userId, tag) {
