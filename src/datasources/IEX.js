@@ -13,11 +13,18 @@ export default class IEXCloudAPI extends RESTDataSource {
 	}
 
 	async getTickers(query) {
-		const data = await this.get(`/search/${encodeURIComponent(query)}`, null, {
-			cacheOptions: { ttl: 60 },
-		});
-
-		return data.map((result) => result.symbol);
+		try {
+			const data = await this.get(
+				`/search/${encodeURIComponent(query)}`,
+				null,
+				{
+					cacheOptions: { ttl: 60 },
+				}
+			);
+			return data.map((result) => result.symbol);
+		} catch {
+			return [];
+		}
 	}
 
 	async getName(ticker) {
@@ -141,20 +148,24 @@ export default class IEXCloudAPI extends RESTDataSource {
 	}
 
 	async getNews(tickers) {
-		const data = await this.get(`/stock/market/batch`, {
-			symbols: tickers.toString(),
-			types: "news",
-			last: 15,
-			language: "en",
-		});
+		try {
+			const data = await this.get(`/stock/market/batch`, {
+				symbols: tickers.toString(),
+				types: "news",
+				last: 15,
+				language: "en",
+			});
 
-		const arr = [];
+			const arr = [];
 
-		for (const ticker in data) {
-			arr.push(...data[ticker].news);
+			for (const ticker in data) {
+				arr.push(...data[ticker].news);
+			}
+
+			return arr;
+		} catch {
+			return [];
 		}
-
-		return arr;
 	}
 
 	async getHistoricalPrices(ticker, range, interval) {
