@@ -38,16 +38,6 @@ const apolloServer = new ApolloServer({
 			token: token,
 		};
 	},
-	plugins: [
-		{
-			async requestDidStart(requestContext) {
-				requestContext.response.http.headers.set(
-					"Access-Control-Allow-Origin",
-					"*"
-				);
-			},
-		},
-	],
 });
 
 apolloServer.listen(process.env.PORT).then(({ url }) => {
