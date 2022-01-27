@@ -17,8 +17,9 @@ const schema = makeExecutableSchema({
 });
 
 const apolloServer = new ApolloServer({
+	cors: false,
 	schema,
-	playground: process.env.NODE_ENV === "development",
+	playground: process.env.NODE_ENV == "development",
 	dataSources: () => ({
 		IEXCloudAPI: new IEXCloudAPI(),
 		UserDataSource: new UserDataSource(usersCollection),
