@@ -13,11 +13,15 @@ export default class IEXCloudAPI extends RESTDataSource {
 	}
 
 	async getTickers(query) {
+		try{
 		const data = await this.get(`/search/${encodeURIComponent(query)}`, null, {
 			cacheOptions: { ttl: 60 },
 		});
-
-		return data.length >= 0: data.map((result) => result.symbol) : [];
+		}
+		return data.map((result) => result.symbol);
+		catch {
+			return []
+		}
 	}
 
 	async getName(ticker) {
