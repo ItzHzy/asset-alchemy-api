@@ -26,7 +26,7 @@ export class UserDataSource extends FirestoreDataSource {
 		const data = await this.findOneById(userId, {
 			ttl: 0,
 		});
-		return data ? data.following.includes(ticker) : [];
+		return data ? data.following.includes(ticker) : false;
 	}
 
 	async getPlanType(userId) {
