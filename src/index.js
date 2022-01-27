@@ -17,7 +17,6 @@ const schema = makeExecutableSchema({
 });
 
 const apolloServer = new ApolloServer({
-	cors: false,
 	schema,
 	playground: process.env.NODE_ENV === "development",
 	dataSources: () => ({
@@ -39,6 +38,16 @@ const apolloServer = new ApolloServer({
 			token: token,
 		};
 	},
+	plugins: [
+		{
+			async willSendResponse(requestContext) {
+				requestContext.response.http.headers.set(
+					"Access-Control-Allow-Origin",
+					"*"
+				);
+			},
+		},
+	],
 });
 
 apolloServer.listen(process.env.PORT).then(({ url }) => {
