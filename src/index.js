@@ -17,7 +17,7 @@ const schema = makeExecutableSchema({
 });
 
 const apolloServer = new ApolloServer({
-	cors: "*",
+	cors: false,
 	schema,
 	playground: process.env.NODE_ENV === "development",
 	dataSources: () => ({
