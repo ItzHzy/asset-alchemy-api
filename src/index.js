@@ -40,7 +40,7 @@ const apolloServer = new ApolloServer({
 	},
 	plugins: [
 		{
-			async willSendResponse(requestContext) {
+			async requestDidStart(requestContext) {
 				requestContext.response.http.headers.set(
 					"Access-Control-Allow-Origin",
 					"*"
