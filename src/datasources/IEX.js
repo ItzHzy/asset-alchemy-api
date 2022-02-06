@@ -79,9 +79,15 @@ export default class IEXCloudAPI extends RESTDataSource {
 	}
 
 	async getQuote(ticker) {
-		return this.get(`/stock/${encodeURIComponent(ticker)}/quote`, null, {
-			cacheOptions: { ttl: 0 },
-		});
+		return this.get(
+			`/stock/${encodeURIComponent(ticker)}/quote`,
+			{
+				displayPercent: true,
+			},
+			{
+				cacheOptions: { ttl: 0 },
+			}
+		);
 	}
 
 	async getHistoricalPrices(ticker, range, interval) {
