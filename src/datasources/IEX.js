@@ -1,7 +1,5 @@
 import { RESTDataSource } from "apollo-datasource-rest";
 
-//TODO: use custom caching to use custom timestamps
-//TODO: use built-in filter on IEX instead of custom
 export default class IEXCloudAPI extends RESTDataSource {
 	constructor() {
 		super();
@@ -27,103 +25,19 @@ export default class IEXCloudAPI extends RESTDataSource {
 		}
 	}
 
-	async getName(ticker) {
-		const data = await this.get(
-			`/stock/${encodeURIComponent(ticker)}/stats/companyName`,
-			null,
-			{
-				cacheOptions: { ttl: 86400 },
-			}
-		);
+	// 	return data
+	// 		.replace(" Corporation", "")
+	// 		.replace(" Inc.", "")
+	// 		.replace(" Corp.", "")
+	// 		.replace(" Ltd.", "")
+	// 		.replace(" Corp", "")
+	// 		.replace(" Inc", "")
+	// 		.replace(" plc", "")
+	// 		.replace(" Plc", "")
+	// 		.replace(" Ltd", "");
+	// }
 
-		//TODO: please fix this madness
-		return data
-			.replace(" Corporation", "")
-			.replace(" Inc.", "")
-			.replace(" Corp.", "")
-			.replace(" Ltd.", "")
-			.replace(" Corp", "")
-			.replace(" Inc", "")
-			.replace(" plc", "")
-			.replace(" Plc", "")
-			.replace(" Ltd", "");
-	}
-
-	async getPrice(ticker) {
-		return this.get(`/stock/${encodeURIComponent(ticker)}/price`, null, {
-			cacheOptions: { ttl: 0 },
-		});
-	}
-
-	//TODO: return as percentage
-	//TODO: use opening price as base
-	async getDailyDelta(ticker) {
-		return this.get(
-			`/stock/${encodeURIComponent(ticker)}/quote/changePercent`,
-			null,
-			{ cacheOptions: { ttl: 0 } }
-		);
-	}
-
-	async getRevenue(ticker) {
-		const data = await this.get(
-			`/stock/${encodeURIComponent(ticker)}/income`,
-			{ last: 4 },
-			{
-				cacheOptions: { ttl: 86400 },
-			}
-		);
-		return data.income ? data.income.map((result) => result.totalRevenue) : [];
-	}
-
-	async getNetIncome(ticker) {
-		const data = await this.get(
-			`/stock/${encodeURIComponent(ticker)}/income`,
-			{ last: 4 },
-			{
-				cacheOptions: { ttl: 86400 },
-			}
-		);
-
-		return data.income ? data.income.map((result) => result.netIncome) : [];
-	}
-
-	//TODO: calculate profit margin here vs through the api to save credits
-	async getGrossProfit(ticker) {
-		const data = await this.get(
-			`/stock/${encodeURIComponent(ticker)}/income`,
-			{ last: 4 },
-			{
-				cacheOptions: { ttl: 86400 },
-			}
-		);
-
-		return data.income ? data.income.map((result) => result.grossProfit) : [];
-	}
-
-	async getOperatingIncome(ticker) {
-		const data = await this.get(
-			`/stock/${encodeURIComponent(ticker)}/income`,
-			{ last: 4 },
-			{
-				cacheOptions: { ttl: 86400 },
-			}
-		);
-
-		return data.income
-			? data.income.map((result) => result.operatingIncome)
-			: [];
-	}
-
-	async getPERatio(ticker) {
-		return this.get(
-			`/stock/${encodeURIComponent(ticker)}/stats/peRatio`,
-			null,
-			{ cacheOptions: { ttl: 86400 } }
-		);
-	}
-
-	async getDescription(ticker) {
+	async getBasicInfo(ticker) {
 		const data = await this.get(
 			`/stock/${encodeURIComponent(ticker)}/company`,
 			null,
@@ -132,7 +46,13 @@ export default class IEXCloudAPI extends RESTDataSource {
 			}
 		);
 
-		return data.description;
+		return data;
+	}
+
+	async getBasicStats(ticker) {
+		return this.get(`/stock/${encodeURIComponent(ticker)}/stats`, null, {
+			cacheOptions: { ttl: 86400 },
+		});
 	}
 
 	async getLogo(ticker) {
@@ -145,6 +65,34 @@ export default class IEXCloudAPI extends RESTDataSource {
 		);
 
 		return data.url;
+	}
+
+	async getIncomeStatement(ticker) {
+		const data = await this.get(
+			`/stock/${encodeURIComponent(ticker)}/income`,
+			{ last: 4 },
+			{
+				cacheOptions: { ttl: 86400 },
+			}
+		);
+		return data.income ? data.income : [];
+	}
+
+	async getQuote(ticker) {
+		return this.get(`/stock/${encodeURIComponent(ticker)}/quote`, null, {
+			cacheOptions: { ttl: 0 },
+		});
+	}
+
+	async getHistoricalPrices(ticker, range, interval) {
+		return this.get(
+			`/stock/${encodeURIComponent(ticker)}/chart/${encodeURIComponent(range)}`,
+			{
+				chartCloseOnly: true,
+				filter: "date,close",
+				chartInterval: interval,
+			}
+		);
 	}
 
 	async getNews(tickers) {
@@ -166,28 +114,5 @@ export default class IEXCloudAPI extends RESTDataSource {
 		} catch {
 			return [];
 		}
-	}
-
-	async getHistoricalPrices(ticker, range, interval) {
-		return this.get(
-			`/stock/${encodeURIComponent(ticker)}/chart/${encodeURIComponent(range)}`,
-			{
-				chartCloseOnly: true,
-				filter: "date,close",
-				chartInterval: interval,
-			}
-		);
-	}
-
-	async getReportingDates(ticker) {
-		const data = await this.get(
-			`/stock/${encodeURIComponent(ticker)}/income`,
-			{ last: 4 },
-			{
-				cacheOptions: { ttl: 86400 },
-			}
-		);
-
-		return data.income ? data.income.map((result) => result.reportDate) : [];
 	}
 }

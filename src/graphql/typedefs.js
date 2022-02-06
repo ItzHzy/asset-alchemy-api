@@ -1,7 +1,5 @@
 import { gql } from "apollo-server";
 
-// TODO: change all to accept null values
-//TODO: define types instead of just JSON
 const typedefs = gql`
 	scalar SafeInt
 	scalar JSON

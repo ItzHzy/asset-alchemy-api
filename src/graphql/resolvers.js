@@ -51,56 +51,51 @@ const resolvers = {
 		},
 	},
 	Company: {
-		name: async (parent, {}, { dataSources }) => {
-			return dataSources.IEXCloudAPI.getName(parent);
-		},
 		ticker: async (parent, {}, { dataSources }) => {
 			return parent;
 		},
+		name: async (parent, {}, { dataSources }) => {
+			return (await dataSources.IEXCloudAPI.getBasicInfo(parent)).companyName;
+		},
 		logo: async (parent, {}, { dataSources }) => {
 			return await dataSources.IEXCloudAPI.getLogo(parent);
-
-			// return dataSources.ClearbitAPI.getLogo(name);
 		},
 		description: async (parent, {}, { dataSources }) => {
-			return dataSources.IEXCloudAPI.getDescription(parent);
+			return (await dataSources.IEXCloudAPI.getBasicInfo(parent)).description;
 		},
 		price: async (parent, {}, { dataSources }) => {
-			let data;
-			try {
-				data = await dataSources.IEXCloudAPI.getPrice(parent);
-			} catch {
-				return null;
-			}
-
-			return data;
+			return (await dataSources.IEXCloudAPI.getQuote(parent)).latestPrice;
 		},
 		dailyDelta: async (parent, {}, { dataSources }) => {
-			let data;
-			try {
-				data = await dataSources.IEXCloudAPI.getDailyDelta(parent);
-			} catch {
-				return null;
-			}
-			return data;
+			return (await dataSources.IEXCloudAPI.getQuote(parent)).changePercent;
 		},
 		revenue: async (parent, {}, { dataSources }) => {
-			return dataSources.IEXCloudAPI.getRevenue(parent);
+			return (await dataSources.IEXCloudAPI.getIncomeStatement(parent)).map(
+				(result) => result.totalRevenue
+			);
 		},
 		netIncome: async (parent, {}, { dataSources }) => {
-			return dataSources.IEXCloudAPI.getNetIncome(parent);
+			return (await dataSources.IEXCloudAPI.getIncomeStatement(parent)).map(
+				(result) => result.netIncome
+			);
 		},
 		grossProfit: async (parent, {}, { dataSources }) => {
-			return dataSources.IEXCloudAPI.getGrossProfit(parent);
+			return (await dataSources.IEXCloudAPI.getIncomeStatement(parent)).map(
+				(result) => result.grossProfit
+			);
 		},
 		operatingIncome: async (parent, {}, { dataSources }) => {
-			return dataSources.IEXCloudAPI.getOperatingIncome(parent);
+			return (await dataSources.IEXCloudAPI.getIncomeStatement(parent)).map(
+				(result) => result.operatingIncome
+			);
 		},
 		peRatio: async (parent, {}, { dataSources }) => {
-			return dataSources.IEXCloudAPI.getPERatio(parent);
+			return (await dataSources.IEXCloudAPI.getBasicStats(parent)).peRatio;
 		},
 		reportingDates: async (parent, {}, { dataSources }) => {
-			return dataSources.IEXCloudAPI.getReportingDates(parent);
+			return (await dataSources.IEXCloudAPI.getIncomeStatement(parent)).map(
+				(result) => result.reportDate
+			);
 		},
 	},
 	News: {

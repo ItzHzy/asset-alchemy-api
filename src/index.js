@@ -9,7 +9,6 @@ import { UserDataSource, usersCollection } from "./datasources/Firestore.js";
 import isTokenValid from "./helpers/validate.js";
 
 dotenv.config();
-//TODO: replace .env with secrets managers and google creds
 
 const schema = makeExecutableSchema({
 	typeDefs,
