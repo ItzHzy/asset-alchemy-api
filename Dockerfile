@@ -15,5 +15,6 @@ WORKDIR /app
 COPY ./package*.json /app/
 COPY ./ /app/
 RUN npm install --production
+RUN npx tsc
 EXPOSE 8080
 ENTRYPOINT ["node", "./build/index.js" ] 
