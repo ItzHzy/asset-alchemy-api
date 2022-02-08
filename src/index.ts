@@ -17,7 +17,6 @@ const schema = makeExecutableSchema({
 
 const apolloServer = new ApolloServer({
 	schema,
-	playground: process.env.NODE_ENV === "development",
 	dataSources: () => ({
 		IEXCloudAPI: new IEXCloudAPI(),
 		UserDataSource: new UserDataSource(usersCollection),
@@ -25,9 +24,9 @@ const apolloServer = new ApolloServer({
 	}),
 	context: ({ req }) => {
 		const token = req.headers.authorization;
-		const { error } = isTokenValid(token);
+		const isValid = isTokenValid(token);
 
-		if (error) {
+		if (!isValid) {
 			throw new AuthenticationError("Invalid Access Token");
 		}
 
