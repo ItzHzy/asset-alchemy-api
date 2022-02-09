@@ -4,9 +4,9 @@ import { ApolloError, ApolloServer, AuthenticationError } from "apollo-server";
 import resolvers from "./graphql/resolvers.js";
 import typeDefs from "./graphql/typedefs.js";
 import IEXCloudAPI from "./datasources/IEX.js";
-import ClearbitAPI from "./datasources/Clearbit.js";
-import { UserDataSource, usersCollection } from "./datasources/Firestore.js";
-import isTokenValid from "./helpers/validate.js";
+import { UserDataSource, usersCollection } from "./datasources/UserStore.js";
+import validateToken from "./plugins/validateToken.js";
+import reportErrors from "./plugins/reportErrors.js";
 
 dotenv.config();
 
@@ -20,22 +20,12 @@ const apolloServer = new ApolloServer({
 	dataSources: () => ({
 		IEXCloudAPI: new IEXCloudAPI(),
 		UserDataSource: new UserDataSource(usersCollection),
-		ClearbitAPI: new ClearbitAPI(),
 	}),
-	context: ({ req }) => {
-		const token = req.headers.authorization;
-		const isValid = isTokenValid(token);
-
-		if (!isValid) {
-			throw new AuthenticationError("Invalid Access Token");
-		}
-
-		return {
-			IEX_API_KEY: process.env.IEX_API_KEY,
-			CLEARBIT_API_KEY: process.env.CLEARBIT_API_KEY,
-			token: token,
-		};
-	},
+	context: async ({ req }) => ({
+		IEX_API_KEY: process.env.IEX_API_KEY,
+		CLEARBIT_API_KEY: process.env.CLEARBIT_API_KEY,
+	}),
+	plugins: [validateToken, reportErrors],
 });
 
 apolloServer.listen(process.env.PORT).then(({ url }) => {

@@ -164,18 +164,14 @@ export default class IEXCloudAPI extends RESTDataSource {
 	}
 
 	async getTickers(query: string): Promise<string[]> {
-		try {
-			const data = await this.get(
-				`/search/${encodeURIComponent(query)}`,
-				{},
-				{
-					cacheOptions: { ttl: 60 },
-				}
-			);
-			return data.map((result: { symbol: any }) => result.symbol);
-		} catch {
-			return [];
-		}
+		const data = await this.get(
+			`/search/${encodeURIComponent(query)}`,
+			{},
+			{
+				cacheOptions: { ttl: 60 },
+			}
+		);
+		return data.map((result: { symbol: any }) => result.symbol);
 	}
 
 	// 	return data

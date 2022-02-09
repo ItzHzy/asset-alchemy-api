@@ -4,7 +4,6 @@ import {
 	IncomeStatementResult,
 	NewsResult,
 } from "../datasources/IEX.js";
-import isTokenValid from "../helpers/validate.js";
 
 interface ApolloContext {
 	dataSources: any;
@@ -26,12 +25,14 @@ const resolvers = {
 			{ query }: QueryArgs,
 			{ dataSources, token }: ApolloContext
 		) => {
-			const tickers = await dataSources.IEXCloudAPI.getTickers(query);
+			try {
+				const tickers = await dataSources.IEXCloudAPI.getTickers(query);
 
-			const data = tickers.filter(function (ticker: string) {
-				return !ticker.includes("-") && !ticker.match(".*\\d.*");
-			});
-			return data;
+				const data = tickers.filter(function (ticker: string) {
+					return !ticker.includes("-") && !ticker.match(".*\\d.*");
+				});
+				return data;
+			} catch (error) {}
 		},
 		getCompanyInfo: async (
 			parent: string,
