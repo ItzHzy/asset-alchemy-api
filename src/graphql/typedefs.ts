@@ -11,7 +11,11 @@ const typedefs = gql`
 
 		getNews(ticker: String, from: String, to: String): [News]
 
-		getHistoricalPrices(ticker: String, range: String, interval: Int): [JSON]
+		getHistoricalPrices(
+			ticker: String
+			range: String
+			interval: Int
+		): [HistoricalPriceResult]
 
 		getFollowing(userId: String): [Company]
 

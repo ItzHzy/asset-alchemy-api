@@ -1,5 +1,6 @@
 import { DataSources } from "apollo-server-core/dist/graphqlOptions";
 import {
+	ChartRange,
 	CompanyStatsResult,
 	IncomeStatementResult,
 	NewsResult,
@@ -14,8 +15,8 @@ interface QueryArgs {
 	userId: string;
 	query?: string;
 	ticker?: string;
-	range?: string;
-	interval?: string;
+	range?: ChartRange;
+	interval?: number;
 }
 
 const resolvers = {
@@ -23,7 +24,7 @@ const resolvers = {
 		searchCompanies: async (
 			parent: string,
 			{ query }: QueryArgs,
-			{ dataSources, token }: ApolloContext
+			{ dataSources }: ApolloContext
 		) => {
 			try {
 				const tickers = await dataSources.IEXCloudAPI.getTickers(query);

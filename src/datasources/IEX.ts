@@ -153,6 +153,37 @@ export interface NewsResult {
 	hasPaywall: boolean;
 }
 
+export interface HistoricalPriceResult {
+	date: string;
+	close: number;
+}
+
+type SmallIntArg = 1 | 2 | 3 | 4 | 5;
+type QuarterArg = 1 | 2 | 3 | 4;
+type HalfArg = 1 | 2;
+
+export type ChartRange =
+	| "today"
+	| "yesterday"
+	| "ytd"
+	| "last-week"
+	| "last-month"
+	| "last-quarter"
+	| `${SmallIntArg}d`
+	| `${SmallIntArg}w`
+	| `${SmallIntArg}m`
+	| `${SmallIntArg}q`
+	| `${SmallIntArg}y`
+	| "tomorrow"
+	| "this-week"
+	| "this-month"
+	| "this-quarter"
+	| "next-week"
+	| "next-quarter"
+	| `Q${QuarterArg}${number}`
+	| `H${HalfArg}${number}`
+	| `${number}`;
+
 export default class IEXCloudAPI extends RESTDataSource {
 	constructor() {
 		super();
@@ -241,7 +272,7 @@ export default class IEXCloudAPI extends RESTDataSource {
 		ticker: string | number | boolean,
 		range: string | number | boolean,
 		interval: any
-	) {
+	): Promise<HistoricalPriceResult[]> {
 		return this.get(
 			`/stock/${encodeURIComponent(ticker)}/chart/${encodeURIComponent(range)}`,
 			{
