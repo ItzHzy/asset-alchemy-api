@@ -10,7 +10,7 @@ import {
 dotenv.config();
 
 Sentry.init({
-	dsn: process.env.SENTRY_DSN,
+	dsn: process.env.NODE_ENV == "production" ? process.env.SENTRY_DSN : "",
 });
 
 const reportErrors = {
@@ -20,7 +20,6 @@ const reportErrors = {
 				// If operation can't be parsed, just return
 				if (!requestContext.operation) return;
 
-				console.log(requestContext);
 				for (const error of requestContext.errors as GraphQLError[]) {
 					Sentry.withScope((scope) => {
 						// Annotate whether failing operation was query/mutation/subscription

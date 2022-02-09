@@ -162,33 +162,21 @@ const resolvers = {
 		},
 	},
 	News: {
-		datetime: async (
-			parent: NewsResult,
-			{},
-			{ dataSources }: ApolloContext
-		) => {
+		datetime: async (parent: NewsResult, {}, {}: ApolloContext) => {
 			return parent.datetime;
 		},
-		headline: async (
-			parent: NewsResult,
-			{},
-			{ dataSources }: ApolloContext
-		) => {
+		headline: async (parent: NewsResult, {}, {}: ApolloContext) => {
 			return parent.headline;
 		},
-		related: async (parent: NewsResult, {}, { dataSources }: ApolloContext) => {
+		related: async (parent: NewsResult, {}, {}: ApolloContext) => {
 			return parent.related
 				.split(",")
 				.filter((ticker) => !ticker.includes("-") && ticker != "");
 		},
-		sourceURL: async (
-			parent: NewsResult,
-			{},
-			{ dataSources }: ApolloContext
-		) => {
+		sourceURL: async (parent: NewsResult, {}, {}: ApolloContext) => {
 			return parent.url;
 		},
-		summary: async (parent: NewsResult, {}, { dataSources }: ApolloContext) => {
+		summary: async (parent: NewsResult, {}, {}: ApolloContext) => {
 			return parent.summary;
 		},
 	},

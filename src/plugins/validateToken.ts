@@ -1,12 +1,6 @@
 import dotenv from "dotenv";
-import jwt, {
-	JwtHeader,
-	Secret,
-	VerifyErrors,
-	VerifyOptions,
-} from "jsonwebtoken";
-import jwksClient, { RsaSigningKey } from "jwks-rsa";
-import axios from "axios";
+import jwt, { JwtHeader, VerifyOptions } from "jsonwebtoken";
+import jwksClient from "jwks-rsa";
 import { GraphQLRequestContext } from "apollo-server-types";
 import { AuthenticationError } from "apollo-server";
 
@@ -38,6 +32,9 @@ const validateToken = {
 		return {
 			async didResolveOperation(requestContext: GraphQLRequestContext) {
 				try {
+					// don't validate tokens in development
+					if (process.env.NODE_ENV == "development") return;
+
 					const token = requestContext.request.http?.headers
 						.get("Authorization")
 						?.split(" ")[1] as string;

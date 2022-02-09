@@ -174,18 +174,6 @@ export default class IEXCloudAPI extends RESTDataSource {
 		return data.map((result: { symbol: any }) => result.symbol);
 	}
 
-	// 	return data
-	// 		.replace(" Corporation", "")
-	// 		.replace(" Inc.", "")
-	// 		.replace(" Corp.", "")
-	// 		.replace(" Ltd.", "")
-	// 		.replace(" Corp", "")
-	// 		.replace(" Inc", "")
-	// 		.replace(" plc", "")
-	// 		.replace(" Plc", "")
-	// 		.replace(" Ltd", "");
-	// }
-
 	async getBasicInfo(
 		ticker: string | number | boolean
 	): Promise<CompanyInfoResult> {
