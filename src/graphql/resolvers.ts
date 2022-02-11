@@ -44,10 +44,11 @@ const resolvers = {
 		},
 		getNews: async (
 			parent: string,
-			{ ticker }: QueryArgs,
+			{ ticker, userId }: QueryArgs,
 			{ dataSources }: ApolloContext
 		) => {
-			const data = await dataSources.IEXCloudAPI.getNews([ticker]);
+			const tickers = await dataSources.UserDataSource.getFollowing(userId);
+			const data = await dataSources.IEXCloudAPI.getNews([ticker], tickers);
 
 			return data;
 		},

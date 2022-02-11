@@ -9,7 +9,7 @@ const typedefs = gql`
 
 		getCompanyInfo(ticker: String): Company
 
-		getNews(ticker: String, from: String, to: String): [News]
+		getNews(ticker: String, userId: String): [News]
 
 		getHistoricalPrices(
 			ticker: String
@@ -58,6 +58,11 @@ const typedefs = gql`
 		planType: String
 		settings: JSON
 		tags: [String]
+	}
+
+	type HistoricalPriceResult {
+		date: String
+		close: Float
 	}
 `;
 
