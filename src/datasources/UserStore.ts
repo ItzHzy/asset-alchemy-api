@@ -27,9 +27,7 @@ const firestore = new Firestore({
 });
 
 export const usersCollection: CollectionReference<UserDoc> =
-	firestore.collection(
-		process.env.USER_COLLECTION as string
-	) as CollectionReference<UserDoc>;
+	firestore.collection("users") as CollectionReference<UserDoc>;
 
 export class UserDataSource extends FirestoreDataSource<UserDoc, Object> {
 	async findUserById(userId: string) {
@@ -48,30 +46,9 @@ export class UserDataSource extends FirestoreDataSource<UserDoc, Object> {
 		return data ? data.following.includes(ticker) : false;
 	}
 
-	async getPlanType(userId: string): Promise<string> {
-		const data = await this.findOneById(userId);
-		return data ? data.planType : "Not a user";
-	}
-
 	async getSettings(userId: string): Promise<Object> {
 		const data = await this.findOneById(userId);
 		return data ? data.settings : "Not a user";
-	}
-
-	async getTags(userId: string): Promise<string[]> {
-		const data = await this.findOneById(userId);
-		return data ? data.tags : "Not a user";
-	}
-
-	async hasTag(userId: string, tag: string): Promise<boolean> {
-		const data = await this.findOneById(userId);
-		return data ? data.tags.includes(tag) : false;
-	}
-
-	async addTag(userId: string, tag: string): Promise<void> {
-		const data: Array<string> = await this.getTags(userId);
-		data.push(tag);
-		this.updateOnePartial(userId, { tags: data });
 	}
 
 	async followCompany(userId: string, ticker: string): Promise<void> {
@@ -84,5 +61,31 @@ export class UserDataSource extends FirestoreDataSource<UserDoc, Object> {
 		await this.updateOnePartial(userId, {
 			following: FieldValue.arrayRemove(ticker),
 		});
+	}
+
+	async updateUserPrimitiveField(
+		userId: string,
+		field: string,
+		value: any
+	): Promise<void> {
+		let data: any = {};
+		data[field] = value;
+		await this.updateOnePartial(userId, data);
+	}
+
+	async addAlert(userId: string, alertId: string): Promise<void> {
+		await this.updateOnePartial(userId, {
+			alerts: FieldValue.arrayUnion(alertId),
+		});
+	}
+
+	async removeAlert(userId: string, alertId: string): Promise<void> {
+		await this.updateOnePartial(userId, {
+			alerts: FieldValue.arrayRemove(alertId),
+		});
+	}
+
+	async getUserField(userId: string, field: string): Promise<any> {
+		return ((await this.findOneById(userId)) as any)[field];
 	}
 }

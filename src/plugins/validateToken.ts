@@ -24,6 +24,24 @@ const verifyOptions = {
 	algorithms: ["RS256"],
 };
 
+export async function getUserId(authHeader: string): Promise<string | null> {
+	try {
+		const token = authHeader.split(" ")[1];
+		let decoded: any;
+		await jwt.verify(
+			token,
+			getKey,
+			verifyOptions as VerifyOptions,
+			(err: any, decoded) => {
+				decoded = decoded;
+			}
+		);
+		return decoded.sub as string;
+	} catch (err) {
+		return null;
+	}
+}
+
 // Plugin to validate JWTs issued by Auth0
 const validateToken = {
 	// called at the beginning of every request
@@ -53,8 +71,6 @@ const validateToken = {
 						signingKey,
 						verifyOptions as VerifyOptions,
 						(error, decoded) => {
-							console.log(decoded);
-
 							if (error) throw new AuthenticationError(error.message);
 						}
 					);

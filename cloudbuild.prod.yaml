@@ -5,9 +5,6 @@ steps:
       - "build"
       - "-t"
       - "gcr.io/$PROJECT_ID/asset-alchemy-api:$COMMIT_SHA"
-      - "--build-arg=AUTH0_DOMAIN=asset-alchemy.us.auth0.com"
-      - "--build-arg=AUTH0_API_IDENTIFIER=https://api.assetalchemy.io"
-      - "--build-arg=USER_COLLECTION=users-prod"
       - "."
   # Push the container image to Container Registry
   - name: "gcr.io/cloud-builders/docker"
