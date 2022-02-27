@@ -7,7 +7,7 @@ import {
 import {
 	NotificationMethods,
 	Condition,
-	RuleAlert,
+	Alert,
 } from "../datasources/Alerts.js";
 
 interface ApolloContext {
@@ -21,7 +21,7 @@ interface Params {
 	ticker?: string;
 	range?: ChartRange;
 	interval?: number;
-	ruleId?: string;
+	alertId?: string;
 	ruleName?: string;
 	symbol?: string;
 	methods?: NotificationMethods;
@@ -94,10 +94,16 @@ const resolvers = {
 			return ctx.dataSources.IEXCloudAPI.getNews(tickers, tickers);
 		},
 		getAlert: async (_: any, params: Params, ctx: ApolloContext) => {
-			return await ctx.dataSources.AlertDataSource.findAlertById(params.ruleId);
+			if (params.alertId == "new") return;
+
+			const data = await ctx.dataSources.AlertDataSource.findAlertById(
+				params.alertId
+			);
+			return data;
 		},
 		listAlerts: async (_: any, params: Params, ctx: ApolloContext) => {
 			const alerts = await ctx.dataSources.UserDataSource.getUserField(
+				ctx.userId,
 				"alerts"
 			);
 			return await ctx.dataSources.AlertDataSource.findManyAlertsById(alerts);
@@ -125,7 +131,7 @@ const resolvers = {
 					params.symbol,
 					params.conditions
 				)
-			).ruleId;
+			).id;
 
 			await ctx.dataSources.UserDataSource.addAlert(ctx.userId, ruleId);
 
@@ -142,7 +148,7 @@ const resolvers = {
 		},
 		updateAlert: async (_: any, params: Params, ctx: ApolloContext) => {
 			await ctx.dataSources.IEXCloudAPI.updateRule(
-				params.ruleId,
+				params.alertId,
 				params.ruleName,
 				params.symbol,
 				params.conditions
@@ -150,7 +156,7 @@ const resolvers = {
 
 			await ctx.dataSources.AlertDataSource.updateAlert(
 				ctx.userId,
-				params.ruleId,
+				params.alertId,
 				params.ruleName,
 				params.symbol,
 				params.methods,
@@ -160,9 +166,9 @@ const resolvers = {
 			return true;
 		},
 		deleteAlert: async (_: any, params: Params, ctx: ApolloContext) => {
-			await ctx.dataSources.IEXCloudAPI.deleteRule(params.ruleId);
-			await ctx.dataSources.UserDataSource.removeAlert(params.ruleId);
-			await ctx.dataSources.AlertDataSource.deleteAlert(params.ruleId);
+			await ctx.dataSources.IEXCloudAPI.deleteRule(params.alertId);
+			await ctx.dataSources.UserDataSource.removeAlert(params.alertId);
+			await ctx.dataSources.AlertDataSource.deleteAlert(params.alertId);
 			return true;
 		},
 	},
@@ -249,23 +255,29 @@ const resolvers = {
 		},
 	},
 	Alert: {
-		creator: async (parent: RuleAlert, {}, {}: ApolloContext) => {
+		creator: async (parent: Alert, {}, {}: ApolloContext) => {
 			return parent.creator;
 		},
-		name: async (parent: RuleAlert, {}, {}: ApolloContext) => {
+		name: async (parent: Alert, {}, {}: ApolloContext) => {
 			return parent.ruleName;
 		},
-		alertId: async (parent: RuleAlert, {}, {}: ApolloContext) => {
-			return parent.ruleName;
+		alertId: async (parent: Alert, {}, {}: ApolloContext) => {
+			return parent.alertId;
 		},
-		symbol: async (parent: RuleAlert, {}, {}: ApolloContext) => {
+		symbol: async (parent: Alert, {}, {}: ApolloContext) => {
 			return parent.symbol;
 		},
-		methods: async (parent: RuleAlert, {}, {}: ApolloContext) => {
+		methods: async (parent: Alert, {}, {}: ApolloContext) => {
 			return parent.methods;
 		},
-		conditions: async (parent: RuleAlert, {}, {}: ApolloContext) => {
-			return parent.conditions;
+		conditions: async (parent: Alert, {}, {}: ApolloContext) => {
+			const data = parent.conditions.map((condition: any) => [
+				condition.metric,
+				condition.operator,
+				condition.value,
+			]);
+
+			return data;
 		},
 	},
 };

@@ -3,6 +3,7 @@ import jwt, { JwtHeader, VerifyOptions } from "jsonwebtoken";
 import jwksClient from "jwks-rsa";
 import { GraphQLRequestContext } from "apollo-server-types";
 import { AuthenticationError } from "apollo-server";
+import decodeJWT from "jwt-decode";
 
 dotenv.config();
 
@@ -13,7 +14,6 @@ const client = jwksClient({
 // asynchronously grab signing keys from auth0 api
 function getKey(header: JwtHeader, callback: (error: any, key: any) => void) {
 	client.getSigningKey(header.kid, (error, key) => {
-		console.log(key);
 		callback(error, key);
 	});
 }
@@ -24,22 +24,9 @@ const verifyOptions = {
 	algorithms: ["RS256"],
 };
 
-export async function getUserId(authHeader: string): Promise<string | null> {
-	try {
-		const token = authHeader.split(" ")[1];
-		let decoded: any;
-		await jwt.verify(
-			token,
-			getKey,
-			verifyOptions as VerifyOptions,
-			(err: any, decoded) => {
-				decoded = decoded;
-			}
-		);
-		return decoded.sub as string;
-	} catch (err) {
-		return null;
-	}
+export function getUserId(authHeader: string): string {
+	const token = authHeader.split(" ")[1];
+	return (decodeJWT(token) as any).sub;
 }
 
 // Plugin to validate JWTs issued by Auth0

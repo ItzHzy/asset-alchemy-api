@@ -215,7 +215,9 @@ export default class IEXCloudAPI extends RESTDataSource {
 	}
 
 	async willSendRequest(request: RequestOptions) {
-		request.params.set("token", this.context.IEX_API_KEY);
+		if (request.path != "/rules/create") {
+			request.params.set("token", this.context.IEX_API_KEY);
+		}
 	}
 
 	async getTickers(query: string): Promise<string[]> {
@@ -334,8 +336,6 @@ export default class IEXCloudAPI extends RESTDataSource {
 
 			return arr;
 		} catch (error) {
-			console.log(error);
-
 			return [];
 		}
 	}
@@ -345,7 +345,7 @@ export default class IEXCloudAPI extends RESTDataSource {
 		symbol: String,
 		conditions: [Condition]
 	): Promise<CreateRuleResult> {
-		return this.post("/rules/create", {
+		const data = await this.post("/rules/create", {
 			token: process.env.IEX_SECRET_KEY,
 			ruleSet: symbol,
 			type: "all",
@@ -359,6 +359,7 @@ export default class IEXCloudAPI extends RESTDataSource {
 				},
 			],
 		});
+		return data;
 	}
 
 	async updateRule(
@@ -367,9 +368,9 @@ export default class IEXCloudAPI extends RESTDataSource {
 		symbol: String,
 		conditions: [Condition]
 	): Promise<CreateRuleResult> {
-		return this.post("/rules/create", {
+		const data = await this.post("/rules/create", {
 			token: process.env.IEX_SECRET_KEY,
-			id: ruleId,
+			ruleId: ruleId,
 			ruleSet: symbol,
 			type: "all",
 			ruleName: ruleName,
@@ -382,6 +383,7 @@ export default class IEXCloudAPI extends RESTDataSource {
 				},
 			],
 		});
+		return data;
 	}
 
 	async deleteRule(ruleId: String): Promise<boolean> {

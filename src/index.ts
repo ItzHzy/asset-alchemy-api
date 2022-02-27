@@ -26,7 +26,10 @@ const apolloServer = new ApolloServer({
 	context: async ({ req }) => ({
 		IEX_API_KEY: process.env.IEX_API_KEY,
 		CLEARBIT_API_KEY: process.env.CLEARBIT_API_KEY,
-		userId: getUserId(req.headers.authorization as string),
+		userId:
+			process.env.NODE_ENV != "development"
+				? getUserId(req.headers.authorization as string)
+				: process.env.AUTH0_USER_ID,
 	}),
 	plugins: [validateToken, reportErrors],
 });

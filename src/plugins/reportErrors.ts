@@ -19,8 +19,9 @@ const reportErrors = {
 			async didEncounterErrors(requestContext: GraphQLRequestContext) {
 				// If operation can't be parsed, just return
 				if (!requestContext.operation) return;
-				if (process.env.NODE_ENV == "development")
+				if (process.env.NODE_ENV == "development") {
 					console.log(requestContext.errors);
+				}
 
 				for (const error of requestContext.errors as GraphQLError[]) {
 					Sentry.withScope((scope) => {

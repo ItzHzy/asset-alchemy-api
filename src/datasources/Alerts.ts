@@ -20,8 +20,8 @@ export interface NotificationMethods {
 
 export type Condition = Array<string>;
 
-export interface RuleAlert {
-	ruleId: string;
+export interface Alert {
+	alertId: string;
 	ruleName: string;
 	symbol: string;
 	methods: NotificationMethods;
@@ -37,11 +37,11 @@ export const alertsCollection: CollectionReference<AlertDoc> =
 	firestore.collection("alerts") as CollectionReference<AlertDoc>;
 
 export class AlertDataSource extends FirestoreDataSource<AlertDoc, Object> {
-	async findAlertById(alertId: string): Promise<RuleAlert> {
+	async findAlertById(alertId: string): Promise<Alert> {
 		return this.findOneById(alertId) as any;
 	}
 
-	async findManyAlertsById(alertIds: Array<string>): Promise<Array<RuleAlert>> {
+	async findManyAlertsById(alertIds: Array<string>): Promise<Array<Alert>> {
 		return this.findManyByIds(alertIds) as any;
 	}
 
@@ -53,13 +53,19 @@ export class AlertDataSource extends FirestoreDataSource<AlertDoc, Object> {
 		methods: NotificationMethods,
 		conditions: Array<Condition>
 	): Promise<void> {
+		const unnestedConditions = conditions.map((condition) => ({
+			metric: condition[0],
+			operator: condition[1],
+			value: condition[2],
+		}));
 		this.createOne({
 			id: ruleId,
+			alertId: ruleId,
 			creator: userId,
 			ruleName: ruleName,
 			symbol: symbol,
 			methods: methods,
-			conditions: conditions,
+			conditions: unnestedConditions,
 		});
 	}
 
@@ -71,13 +77,19 @@ export class AlertDataSource extends FirestoreDataSource<AlertDoc, Object> {
 		methods: NotificationMethods,
 		conditions: Array<Condition>
 	): Promise<void> {
+		const unnestedConditions = conditions.map((condition) => ({
+			metric: condition[0],
+			operator: condition[1],
+			value: condition[2],
+		}));
+
 		this.updateOnePartial(ruleId, {
 			id: ruleId,
 			creator: userId,
 			ruleName: ruleName,
 			symbol: symbol,
 			methods: methods,
-			conditions: conditions,
+			conditions: unnestedConditions,
 		});
 	}
 

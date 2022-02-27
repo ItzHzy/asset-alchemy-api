@@ -1,8 +1,24 @@
 import { gql } from "apollo-server";
+import { GraphQLScalarType } from "graphql";
+
+const Any = new GraphQLScalarType({
+	name: "Any",
+	description: "String, Int, or Float",
+	serialize(value) {
+		return value;
+	},
+	parseValue(value) {
+		return value;
+	},
+	parseLiteral(value) {
+		return value;
+	},
+});
 
 const typedefs = gql`
 	scalar SafeInt
 	scalar JSON
+	scalar Any
 
 	type Query {
 		searchCompanies(query: String): [Company]
@@ -23,9 +39,9 @@ const typedefs = gql`
 
 		getFeed(userId: String): [News]
 
-		getAlert(ruleId: String): Alert
+		getAlert(alertId: String): Alert
 
-		listAlerts(userId: String): [Alert]
+		listAlerts: [Alert]
 	}
 
 	type Mutation {
@@ -37,15 +53,15 @@ const typedefs = gql`
 			ruleName: String
 			symbol: String
 			methods: JSON
-			conditions: [[String]]
+			conditions: [[Any]]
 		): String
 
 		updateAlert(
-			ruleId: String
+			alertId: String
 			ruleName: String
 			symbol: String
 			methods: JSON
-			conditions: [[String]]
+			conditions: [[Any]]
 		): Boolean
 
 		deleteAlert(ruleId: String): Boolean
@@ -94,7 +110,7 @@ const typedefs = gql`
 		alertId: String
 		symbol: Company
 		methods: JSON
-		conditions: [[String]]
+		conditions: [[Any]]
 	}
 `;
 
