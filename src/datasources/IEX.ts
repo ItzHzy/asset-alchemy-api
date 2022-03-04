@@ -215,7 +215,7 @@ export default class IEXCloudAPI extends RESTDataSource {
 	}
 
 	async willSendRequest(request: RequestOptions) {
-		if (request.path != "/rules/create") {
+		if (new RegExp("rules").test(request.path) == false) {
 			request.params.set("token", this.context.IEX_API_KEY);
 		}
 	}
@@ -387,7 +387,9 @@ export default class IEXCloudAPI extends RESTDataSource {
 	}
 
 	async deleteRule(ruleId: String): Promise<boolean> {
-		return this.delete(`/rules/create/${ruleId}`);
+		return this.delete(`/rules/${ruleId}`, {
+			token: process.env.IEX_SECRET_KEY,
+		});
 	}
 
 	async getAlert(ruleId: String): Promise<RuleResult> {

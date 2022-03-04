@@ -167,7 +167,10 @@ const resolvers = {
 		},
 		deleteAlert: async (_: any, params: Params, ctx: ApolloContext) => {
 			await ctx.dataSources.IEXCloudAPI.deleteRule(params.alertId);
-			await ctx.dataSources.UserDataSource.removeAlert(params.alertId);
+			await ctx.dataSources.UserDataSource.removeAlert(
+				ctx.userId,
+				params.alertId
+			);
 			await ctx.dataSources.AlertDataSource.deleteAlert(params.alertId);
 			return true;
 		},

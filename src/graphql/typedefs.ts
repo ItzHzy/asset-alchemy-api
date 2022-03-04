@@ -64,7 +64,7 @@ const typedefs = gql`
 			conditions: [[Any]]
 		): Boolean
 
-		deleteAlert(ruleId: String): Boolean
+		deleteAlert(alertId: String): Boolean
 	}
 
 	type News {
