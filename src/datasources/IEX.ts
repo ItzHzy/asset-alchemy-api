@@ -377,7 +377,7 @@ export default class IEXCloudAPI extends RESTDataSource {
 			conditions: conditions,
 			outputs: [
 				{
-					method: "webhook",
+					method: "googlefunctions",
 					url: process.env.ALERT_WEBHOOK_URL,
 					frequency: 86400,
 				},
